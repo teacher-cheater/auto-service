@@ -1,13 +1,17 @@
-import express, { json } from "express";
+import express from "express";
+import stockRoutes from "./routes/stockRoutes.js";
 
 const app = express();
-
-// Включаем обработку JSON
-app.use(json());
-
 const PORT = process.env.PORT || 4444;
 
-// Запуск сервера
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.use(express.json());
+
+app.use("/api", stockRoutes);
+
+app.get("/", (req, res) => {
+  res.send("Hello!!!"); // Тестовая страница
+});
+
+app.listen(PORT, err => {
+  return err ? console.log(err) : console.log(`Server OK. PORT ${PORT}`);
 });

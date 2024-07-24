@@ -6,14 +6,11 @@ let db;
 
 async function connectDB() {
   if (!client) {
-    client = new MongoClient(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    client = new MongoClient(mongoUri);
     await client.connect();
-    db = client.db();
+    db = client.db("hrTest");
   }
   return db;
 }
 
-export default { connectDB };
+export default connectDB;
