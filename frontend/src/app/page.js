@@ -11,9 +11,8 @@ export default function Home() {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [selectedModels, setSelectedModels] = useState([]);
   const [stock, setStock] = useState([]);
-
-  console.log("selectedModels", selectedModels);
-  // console.log("brands", brands);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     fetchBrands();
@@ -22,9 +21,9 @@ export default function Home() {
   useEffect(() => {
     if (selectedBrand) {
       fetchModels(selectedBrand);
-      fetchStock(selectedBrand, selectedModels);
+      fetchStock(selectedBrand, selectedModels, page);
     }
-  }, [selectedBrand, selectedModels]);
+  }, [selectedBrand, selectedModels, page]);
 
   const fetchBrands = async () => {
     try {
@@ -36,24 +35,23 @@ export default function Home() {
   };
 
   const fetchModels = async brand => {
-    console.log("brand--", brand);
     try {
       const response = await axios.get(
         `http://localhost:4444/api/models/${brand}`
       );
-      console.log("response", response.data);
       setModels(response.data);
     } catch (error) {
       message.error("Ошибка при загрузке моделей");
     }
   };
 
-  const fetchStock = async (brand, models) => {
+  const fetchStock = async (brand, models, page) => {
     try {
       const response = await axios.get("http://localhost:4444/api/stock", {
-        params: { mark: brand, models: models.join(",") },
+        params: { mark: brand, models: models.join(","), page },
       });
-      setStock(response.data);
+      setStock(response.data.stocks);
+      setTotal(response.data.totalCount);
     } catch (error) {
       message.error("Ошибка при загрузке стока");
     }
@@ -81,23 +79,6 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {/* <div style={{}}>
-        {brands.map(brand => (
-          <span
-            onClick={value => setSelectedBrand(value)}
-            style={{
-              display: "inlineBlock",
-              color: "blue",
-              marginRight: "12px",
-            }}
-            key={brand.count}
-          >
-            {brand.mark} {brand.count}{" "}
-          </span>
-        ))}
-      </div> */}
-
-      <p>Модель:</p>
       <Select
         placeholder="Выберите марку"
         style={{ width: 200 }}
@@ -129,7 +110,13 @@ export default function Home() {
         rowKey="_id"
         style={{ marginTop: 20 }}
       />
-      <Pagination style={{ marginTop: 20 }} />
+      <Pagination
+        current={page}
+        total={total}
+        pageSize={20}
+        onChange={page => setPage(page)}
+        style={{ marginTop: 20, display: "flex", justifyContent: "flex-end" }}
+      />
     </main>
   );
 }
