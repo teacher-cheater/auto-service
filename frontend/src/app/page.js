@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
-import styles from "./page.module.css";
-import { Table, Select, Pagination, Tag, message } from "antd";
+import { Suspense, useEffect, useState } from "react";
 import axios from "axios";
-const { Option } = Select;
+import BrandSelector from "./components/BrandSelector";
+import ModelSelector from "./components/ModelSelector";
+import StockTable from "./components/StockTable";
+import styles from "./page.module.css";
 
 export default function Home() {
   const [models, setModels] = useState([]);
@@ -30,7 +31,7 @@ export default function Home() {
       const response = await axios.get("http://localhost:4444/api/brands");
       setBrands(response.data);
     } catch (error) {
-      message.error("Ошибка при загрузке списка марок");
+      console.error("Ошибка при загрузке списка марок");
     }
   };
 
@@ -41,7 +42,7 @@ export default function Home() {
       );
       setModels(response.data);
     } catch (error) {
-      message.error("Ошибка при загрузке моделей");
+      console.error("Ошибка при загрузке моделей");
     }
   };
 
@@ -53,7 +54,7 @@ export default function Home() {
       setStock(response.data.stocks);
       setTotal(response.data.totalCount);
     } catch (error) {
-      message.error("Ошибка при загрузке стока");
+      console.error("Ошибка при загрузке стока");
     }
   };
 
@@ -88,53 +89,26 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {brands.map(brand => (
-        <Tag
-          onClick={() => handleBrandClick(brand.mark)}
-          style={{
-            cursor: "pointer",
-            paddingLeft: 0,
-            marginBottom: 12,
-            color: "blue",
-            border: "none",
-            background: "inherit",
-            fontWeight: selectedBrand === brand.mark ? "bold" : "normal",
-          }}
-          key={brand.mark}
-        >
-          <span style={{ color: "blue" }}>{brand.mark}</span>{" "}
-          <span style={{ color: "black" }}>{brand.count}</span>
-        </Tag>
-      ))}
-      <p className={styles.subtitle}>Модель:</p>
-      <Select
-        mode="multiple"
-        placeholder="Выберите модели"
-        style={{ width: 200 }}
-        onChange={handleModelChange}
-        value={selectedModels}
-        disabled={!selectedBrand}
-      >
-        {models.map(model => (
-          <Option key={model} value={model}>
-            {model}
-          </Option>
-        ))}
-      </Select>
-      <Table
-        columns={columns}
-        dataSource={stock}
-        pagination={false}
-        rowKey="_id"
-        style={{ marginTop: 20 }}
-      />
-      <Pagination
-        current={page}
-        total={total}
-        pageSize={20}
-        onChange={page => setPage(page)}
-        style={{ marginTop: 20, display: "flex", justifyContent: "flex-end" }}
-      />
+      <Suspense fallback={<p>Loading auto...</p>}>
+        <BrandSelector
+          brands={brands}
+          selectedBrand={selectedBrand}
+          onBrandClick={handleBrandClick}
+        />
+        <ModelSelector
+          models={models}
+          selectedModels={selectedModels}
+          onModelChange={handleModelChange}
+          disabled={!selectedBrand}
+        />
+        <StockTable
+          columns={columns}
+          stock={stock}
+          page={page}
+          total={total}
+          onPageChange={setPage}
+        />
+      </Suspense>
     </main>
   );
 }
