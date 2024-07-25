@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-import { Table, Select, Pagination, message } from "antd";
+import { Table, Select, Pagination, Tag, message } from "antd";
 import axios from "axios";
 const { Option } = Select;
 
@@ -77,24 +77,42 @@ export default function Home() {
     },
   ];
 
+  const handleBrandClick = brand => {
+    setSelectedBrand(brand);
+    setSelectedModels([]);
+  };
+
+  const handleModelChange = value => {
+    setSelectedModels(value);
+  };
+
   return (
     <main className={styles.main}>
-      <Select
-        placeholder="Выберите марку"
-        style={{ width: 200 }}
-        onChange={brand => setSelectedBrand(brand)}
-      >
-        {brands.map(brand => (
-          <Option key={brand.mark} value={brand.mark}>
-            {brand.mark} ({brand.count})
-          </Option>
-        ))}
-      </Select>
+      {brands.map(brand => (
+        <Tag
+          onClick={() => handleBrandClick(brand.mark)}
+          style={{
+            cursor: "pointer",
+            paddingLeft: 0,
+            marginBottom: 12,
+            color: "blue",
+            border: "none",
+            background: "inherit",
+            fontWeight: selectedBrand === brand.mark ? "bold" : "normal",
+          }}
+          key={brand.mark}
+        >
+          <span style={{ color: "blue" }}>{brand.mark}</span>{" "}
+          <span style={{ color: "black" }}>{brand.count}</span>
+        </Tag>
+      ))}
+      <p className={styles.subtitle}>Модель:</p>
       <Select
         mode="multiple"
         placeholder="Выберите модели"
-        style={{ width: 300, marginLeft: 20 }}
-        onChange={value => setSelectedModels(value)}
+        style={{ width: 200 }}
+        onChange={handleModelChange}
+        value={selectedModels}
         disabled={!selectedBrand}
       >
         {models.map(model => (
