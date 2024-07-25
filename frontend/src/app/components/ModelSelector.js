@@ -8,7 +8,7 @@ const ModelSelector = ({ models, selectedModels, onModelChange, disabled }) => {
     <Select
       mode="multiple"
       placeholder="Выберите модели"
-      style={{ width: 200 }}
+      style={{ minWidth: 200 }}
       onChange={onModelChange}
       value={selectedModels}
       disabled={disabled}

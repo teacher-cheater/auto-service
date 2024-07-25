@@ -4,6 +4,11 @@
   padding: 50px 15px;
 }
 
-.subtitle{
+.subtitle {
   margin-bottom: 10px;
+}
+
+.loading {
+  font-size: 20px;
+  text-align: center;
 }
