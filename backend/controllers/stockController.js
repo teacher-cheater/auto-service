@@ -16,7 +16,6 @@ export async function getBrands(req, res) {
   }
 }
 
-// Получение списка моделей по марке
 export async function getModels(req, res) {
   try {
     const { mark } = req.params;
@@ -42,14 +41,16 @@ export async function getStock(req, res) {
       query.model = { $in: models.split(",") };
     }
 
+    const totalCount = await db.collection("stock").countDocuments(query);
+
     const stocks = await db
       .collection("stock")
       .find(query)
-      .skip((page - 1) * 20) // Пагинация
+      .skip((page - 1) * 20)
       .limit(20)
       .toArray();
 
-    res.json(stocks);
+    res.json({ stocks, totalCount });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
