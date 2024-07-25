@@ -7,8 +7,8 @@ import {
 
 const router = express.Router();
 
-router.get("/brands", getBrands); // Получение списка марок
-router.get("/models/:mark", getModels); // Получение моделей по марке
-router.get("/stock", getStock); // Получение стока с фильтрацией и пагинацией
+router.get("/brands", getBrands);
+router.get("/models/:mark", getModels);
+router.get("/stock", getStock);
 
 export default router;
