@@ -36,11 +36,11 @@ export const mongoUri =
   "mongodb://hrTest:hTy785JbnQ5@mongo0.maximum.expert:27423/?authSource=hrTest&replicaSet=ReplicaSet&readPreference=primary";
 
 Перейдите в директорию backend и запустите сервер:
-- cd server
+- cd backend
 - npm start
 
 Перейдите в директорию frontend и запустите клиентское приложение:
-- cd ../client
+- cd ../frontend
 - npm run dev
 
 ### Теперь можно открыть браузер и перейти по адресу http://localhost:3000, чтобы увидеть приложение в действии.
