@@ -13,7 +13,13 @@ const useStock = (brand, models, page) => {
           const response = await axios.get("/stock", {
             params: { mark: brand, models: models.join(","), page },
           });
-          setStock(response.data.stocks);
+          const formattedStock = response.data.stocks.map(item => ({
+            ...item,
+            modification: `${item.engine.volume} ${item.engine.transmission} (${item.engine.power} л.с) ${item.drive}`,
+            configuration: item.equipmentName,
+          }));
+
+          setStock(formattedStock);
           setTotal(response.data.totalCount);
         } catch (error) {
           console.error("Ошибка при загрузке стока");

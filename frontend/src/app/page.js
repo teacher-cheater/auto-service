@@ -42,7 +42,23 @@ export default function Home() {
       title: "Дата создания",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: date => new Date(date).toLocaleDateString(),
+      render: date => {
+        const optionsDate = {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        };
+        const optionsTime = { hour: "2-digit", minute: "2-digit" };
+        const dateString = new Date(date).toLocaleDateString(
+          "ru-RU",
+          optionsDate
+        );
+        const timeString = new Date(date).toLocaleTimeString(
+          "ru-RU",
+          optionsTime
+        );
+        return `${dateString} ${timeString}`;
+      },
     },
   ];
 
